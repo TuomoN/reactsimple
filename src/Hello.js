@@ -1,37 +1,43 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-export default class Hello extends React.Component {
-    constructor (props) {
-        super(props)
-        this.state = {
-            date: new Date()
-        }
-        this.handleChange = this.handleChange.bind(this)
-    }
-    handleChange(e) {
-        this.props.onChange(e.target.name, e.target.value)
-        this.setState({date: new Date()})
-    }
-    render () {
-        const {
-            person
-        } = this.props
-        const {
-            home
-        } = person
-        return (
-            <React.Fragment>
-                <h1>Hello, {person.name} from {home}!</h1>
-                <p>It is now {this.state.date.toLocaleString()}</p>
-                <div>
-                    <label htmlFor='name'>Name</label>
-                    <input name='name' value={person.name} onChange={this.handleChange} />
-                </div>
-                <div>
-                    <label htmlFor='home'>Home</label>
-                    <input name='home' value={person.home} onChange={this.handleChange} />
-                </div>
-            </React.Fragment>
-        )
-    }
+import { setName } from './reducer'
+
+class Hello extends Component {
+  constructor (props) {
+    super(props)
+  }
+
+  render () {
+    const {
+      name,
+      date,
+      setName
+    } = this.props
+    return (
+      <>
+        <h1>Hello, {name}</h1>
+        <p>It is now {date.toLocaleString()}</p>
+        <div>
+          <label htmlFor='name'>Name</label>
+          <input name='name' value={name} onChange={e => setName(e.target.value)} />
+        </div>
+      </>
+    )
+  }
 }
+
+const mapStateToProps = state => {
+  return {
+    name: state.name,
+    date: state.date
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setName: name => dispatch(setName(name))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Hello)
